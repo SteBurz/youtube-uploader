@@ -1,0 +1,2 @@
+# youtube-uploader
+Uploading Videos Using Youtube API and Python!  Optimizing processes is very important nowadays because we want to save time to have more free time or more time for other tasks.  In this video I show how to create a script which is uploading videos automatically to Youtube using the Youtube Data API.  I will save time in the future because I won't have to add the same tags and description all over the time. I just need to add specific informations later on.
