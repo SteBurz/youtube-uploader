@@ -5,7 +5,7 @@ Uploading Videos Using Youtube API and Python!  Optimizing processes is very imp
 
 Please read the API of Youtube: https://developers.google.com/youtube/v3
 
-Checkout the tutorial on Youtube: https://www.steffoverflow.com
+Checkout the tutorial on Youtube: https://youtu.be/PnSTIg83eyk
 
 Setup everything you need to use the API from this article: https://developers.google.com/youtube/v3/guides/uploading_a_video
 
