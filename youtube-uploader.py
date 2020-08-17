@@ -48,7 +48,7 @@ VALID_PRIVACY_STATUSES = ('public', 'private', 'unlisted')
 
 
 def get_authenticated_service(): # Modified
-    credential_path = os.path.join('./', 'credential_sample.json')
+    credential_path = os.path.join('./', 'credentials.json')
     store = Storage(credential_path)
     credentials = store.get()
     if not credentials or credentials.invalid:
@@ -63,7 +63,7 @@ def initialize_upload(youtube, options):
 
   body=dict(
     snippet=dict(
-      title=options.getFileName().split(".", 1)[0],
+      title=options.getFileName("video").split(".", 1)[0],
       description=options.description,
       tags=tags,
       categoryId=options.category
@@ -74,18 +74,18 @@ def initialize_upload(youtube, options):
   )
 
   # Call the API's videos.insert method to create and upload the video.
-  videoPath = "D:\\Videos\\Youtube\\Upload\%s" % (options.getFileName())
+  videoPath = "D:\\Videos\\Youtube\\Upload\%s" % (options.getFileName("video"))
   insert_request = youtube.videos().insert(
     part=','.join(body.keys()),
     body=body,
     media_body=MediaFileUpload(videoPath, chunksize=-1, resumable=True)
   )
 
-  resumable_upload(insert_request)
+  resumable_upload(insert_request, options)
 
 # This method implements an exponential backoff strategy to resume a
 # failed upload.
-def resumable_upload(request):
+def resumable_upload(request, options):
   response = None
   error = None
   retry = 0
@@ -95,7 +95,10 @@ def resumable_upload(request):
       status, response = request.next_chunk()
       if response is not None:
         if 'id' in response:
-          print ('Video id "%s" was successfully uploaded.') % response['id']
+          print ('The video with the id %s was successfully uploaded!' % response['id'])
+          
+          # upload thumbnail for Video
+          options.insertThumbnail(youtube, response['id'])
         else:
           exit('The upload failed with an unexpected response: %s' % response)
     except HttpError as e:
@@ -119,10 +122,10 @@ def resumable_upload(request):
       time.sleep(sleep_seconds)
 
 if __name__ == '__main__':
-  args = videoDetails.Video
+  args = videoDetails.Video()
   youtube = get_authenticated_service()
 
   try:
-    initialize_upload(youtube, videoDetails.Video)
+    initialize_upload(youtube, args)
   except HttpError as e:
     print ('An HTTP error %d occurred:\n%s') % (e.resp.status, e.content)
